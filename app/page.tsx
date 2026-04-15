@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-// Inner component that uses useSearchParams (required for Next.js 16 build)
 function RedactionApp() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -24,18 +23,16 @@ function RedactionApp() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [sanitizedPayload, setSanitizedPayload] = useState<any>(null)
 
-  // System Audit Terminal - logs persist on screen
+  // System Audit Terminal
   const [auditLogs, setAuditLogs] = useState<string[]>([])
   const terminalRef = useRef<HTMLDivElement>(null)
 
-  // Auto-scroll terminal
   useEffect(() => {
     if (terminalRef.current) {
       terminalRef.current.scrollTop = terminalRef.current.scrollHeight
     }
   }, [auditLogs])
 
-  // Load logo
   useEffect(() => {
     if (!domain) return
     const clearbitLogo = `https://logo.clearbit.com/${domain}`
@@ -44,7 +41,6 @@ function RedactionApp() {
 
   const clearTerminal = () => setAuditLogs([])
 
-  // Stream audit logs with readable timing (stay visible after finish)
   const streamAuditLogs = async () => {
     const logs = [
       `[${new Date().toLocaleTimeString()}] INITIATING AIR-GAPPED ENVIRONMENT...`,
@@ -84,7 +80,7 @@ function RedactionApp() {
     setIsProcessing(false)
   }
 
-  // Landing page (no domain)
+  // Landing page
   if (!domain) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
@@ -154,31 +150,30 @@ function RedactionApp() {
         </div>
       </div>
 
-      <div className="max-w-screen-2xl mx-auto p-8 space-y-8">
-        {/* Main Three Panels */}
-        <div className="flex gap-8 h-[calc(100vh-260px)]">
+      <div className="max-w-screen-2xl mx-auto p-8">
+        <div className="flex gap-6 h-[calc(100vh-140px)]">
           {/* LEFT: Input */}
           <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col shadow-2xl">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>📋 CLIENT PII INPUT</h2>
             <div className="space-y-8 flex-1">
               <div>
                 <label className="block text-xs font-medium text-zinc-400 mb-2">CLIENT NAME</label>
-                <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg transition-all" />
+                <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-zinc-400 mb-2">SSN</label>
-                <input type="text" value={ssn} onChange={(e) => setSsn(e.target.value)} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg transition-all" />
+                <input type="text" value={ssn} onChange={(e) => setSsn(e.target.value)} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-zinc-400 mb-2">ACCOUNT BALANCE</label>
                 <div className="relative">
                   <span className="absolute left-5 top-1/2 -translate-y-1/2 text-2xl text-zinc-400">$</span>
-                  <input type="text" value={accountBalance} onChange={(e) => setAccountBalance(e.target.value)} className="w-full pl-10 pr-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg transition-all" />
+                  <input type="text" value={accountBalance} onChange={(e) => setAccountBalance(e.target.value)} className="w-full pl-10 pr-5 py-4 bg-zinc-800 border border-zinc-700 rounded-2xl focus:border-[var(--accent)] outline-none text-lg" />
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-medium text-zinc-400 mb-2">MEETING NOTES</label>
-                <textarea value={meetingNotes} onChange={(e) => setMeetingNotes(e.target.value)} rows={5} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-3xl focus:border-[var(--accent)] outline-none resize-none text-lg transition-all" />
+                <textarea value={meetingNotes} onChange={(e) => setMeetingNotes(e.target.value)} rows={6} className="w-full px-5 py-4 bg-zinc-800 border border-zinc-700 rounded-3xl focus:border-[var(--accent)] outline-none resize-none text-lg" />
               </div>
             </div>
 
@@ -216,16 +211,22 @@ function RedactionApp() {
             )}
           </div>
 
-          {/* RIGHT: Output */}
+          {/* RIGHT: Redacted Output - improved meeting notes display */}
           <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col shadow-2xl">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>✅ REDACTED OUTPUT</h2>
+            
             {sanitizedPayload ? (
-              <div className="space-y-8 flex-1 flex flex-col">
-                <div className="bg-black/40 border border-zinc-700 rounded-3xl p-6 font-mono text-sm space-y-4 flex-1">
-                  <div className="flex justify-between"><span className="text-zinc-400">clientName</span><span className="text-emerald-300">{sanitizedPayload.clientName}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-400">ssn</span><span className="text-emerald-300">{sanitizedPayload.ssn}</span></div>
-                  <div className="flex justify-between"><span className="text-zinc-400">accountBalance</span><span className="text-emerald-300">{sanitizedPayload.accountBalance}</span></div>
-                  <div><span className="text-zinc-400 block mb-1">meetingNotes</span><p className="text-zinc-300 text-xs">{sanitizedPayload.meetingNotes}</p></div>
+              <div className="flex-1 flex flex-col gap-6">
+                <div className="bg-black/40 border border-zinc-700 rounded-3xl p-6 font-mono text-sm flex-1 overflow-auto">
+                  <div className="space-y-4">
+                    <div className="flex justify-between"><span className="text-zinc-400">clientName</span><span className="text-emerald-300">{sanitizedPayload.clientName}</span></div>
+                    <div className="flex justify-between"><span className="text-zinc-400">ssn</span><span className="text-emerald-300">{sanitizedPayload.ssn}</span></div>
+                    <div className="flex justify-between"><span className="text-zinc-400">accountBalance</span><span className="text-emerald-300">{sanitizedPayload.accountBalance}</span></div>
+                    <div>
+                      <span className="text-zinc-400 block mb-2">meetingNotes</span>
+                      <p className="text-zinc-300 leading-relaxed text-sm whitespace-pre-wrap">{sanitizedPayload.meetingNotes}</p>
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -234,36 +235,40 @@ function RedactionApp() {
                     <h3 className="uppercase text-xs tracking-widest font-medium">Cloud LLM Summary (SANITIZED ONLY)</h3>
                   </div>
                   <div className="bg-gradient-to-br from-cyan-950 border border-cyan-800 rounded-3xl p-6 text-sm">
-                    Client {sanitizedPayload.clientName} maintains an account balance of {sanitizedPayload.accountBalance}. Sanitized notes indicate standard refinancing discussion. No PII exposed.
+                    Client {sanitizedPayload.clientName} maintains an account balance of {sanitizedPayload.accountBalance}. 
+                    Sanitized notes indicate standard refinancing discussion with emphasis on security protocols. 
+                    No PII exposed.
                   </div>
                 </div>
-
-                <button onClick={() => setSanitizedPayload(null)} className="text-xs mx-auto block text-zinc-400 hover:text-white underline">Clear output</button>
               </div>
             ) : (
               <div className="flex-1 flex items-center justify-center text-zinc-500">Redacted output will appear here</div>
             )}
-          </div>
-        </div>
 
-        {/* System Audit Terminal - logs stay visible */}
-        <div className="bg-black border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl">
-          <div className="bg-zinc-950 border-b border-zinc-800 px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-x-3">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
-            </div>
-            <div className="font-mono text-xs text-zinc-400 tracking-widest">SYSTEM AUDIT TERMINAL • AIR-GAPPED MODE</div>
-            <button onClick={clearTerminal} className="text-[10px] px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded text-zinc-400 hover:text-white transition-colors">CLEAR LOGS</button>
-          </div>
-
-          <div ref={terminalRef} className="h-72 p-6 font-mono text-sm text-emerald-300 bg-black overflow-y-auto whitespace-pre-wrap leading-relaxed">
-            {auditLogs.length > 0 ? (
-              auditLogs.map((log, index) => <div key={index} className="mb-1">{log}</div>)
-            ) : (
-              <div className="text-zinc-500 italic">Terminal ready. Click PROCESS SECURELY to start the air-gapped audit trail...</div>
+            {sanitizedPayload && (
+              <button onClick={() => setSanitizedPayload(null)} className="mt-6 text-xs text-zinc-400 hover:text-white underline">Clear output</button>
             )}
+          </div>
+
+          {/* AUDIT TERMINAL - now vertical panel on the right */}
+          <div className="w-96 bg-black border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
+            <div className="bg-zinc-950 border-b border-zinc-800 px-6 py-3 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-x-3">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+              </div>
+              <div className="font-mono text-xs text-zinc-400 tracking-widest">SYSTEM AUDIT TERMINAL</div>
+              <button onClick={clearTerminal} className="text-[10px] px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 rounded text-zinc-400 hover:text-white transition-colors">CLEAR</button>
+            </div>
+
+            <div ref={terminalRef} className="flex-1 p-6 font-mono text-sm text-emerald-300 bg-black overflow-y-auto whitespace-pre-wrap leading-relaxed">
+              {auditLogs.length > 0 ? (
+                auditLogs.map((log, index) => <div key={index} className="mb-1">{log}</div>)
+              ) : (
+                <div className="text-zinc-500 italic">Terminal ready. Click PROCESS SECURELY to begin audit trail...</div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -271,7 +276,7 @@ function RedactionApp() {
   )
 }
 
-// Root page with Suspense boundary (fixes Vercel build error)
+// Required for Next.js 16 + useSearchParams
 export default function Page() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Loading Sovereign AI Redaction Demo...</div>}>
