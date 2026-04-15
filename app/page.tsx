@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-export default function SovereignRedactionDemo() {
+// Inner client component that uses useSearchParams (wrapped in Suspense below)
+function RedactionApp() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const domain = searchParams.get('domain')
@@ -11,7 +12,6 @@ export default function SovereignRedactionDemo() {
   const [logoUrl, setLogoUrl] = useState<string>('')
   const primaryColor = '#334155' // Reliable bank-grade slate blue
 
-  // Form state
   const [clientName, setClientName] = useState<string>('John Doe')
   const [ssn, setSsn] = useState<string>('123-45-6789')
   const [accountBalance, setAccountBalance] = useState<string>('125000')
@@ -22,7 +22,6 @@ export default function SovereignRedactionDemo() {
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [sanitizedPayload, setSanitizedPayload] = useState<any>(null)
 
-  // Load logo
   useEffect(() => {
     if (!domain) return
     const clearbitLogo = `https://logo.clearbit.com/${domain}`
@@ -32,7 +31,6 @@ export default function SovereignRedactionDemo() {
   const handleProcessSecurely = async () => {
     setIsProcessing(true)
     setSanitizedPayload(null)
-
     await new Promise((resolve) => setTimeout(resolve, 1800))
 
     const sanitizedNotes = meetingNotes.replace(/(\d{3})-?(\d{2})-?(\d{4})/g, '[***-**-****]')
@@ -48,15 +46,13 @@ export default function SovereignRedactionDemo() {
     setIsProcessing(false)
   }
 
-  // Landing page when no domain
+  // Landing page (no domain)
   if (!domain) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
         <div className="max-w-2xl w-full text-center">
           <div className="flex items-center justify-center gap-x-3 mb-8">
-            <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-inner">
-              🛡️
-            </div>
+            <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-inner">🛡️</div>
             <h1 className="text-5xl font-semibold tracking-tighter text-white">Sovereign AI Redaction</h1>
           </div>
 
@@ -90,20 +86,18 @@ export default function SovereignRedactionDemo() {
             </div>
           </div>
 
-          <div className="mt-12 text-xs text-zinc-500">Next.js 16 • Fully client-side • Ready for Vercel</div>
+          <div className="mt-12 text-xs text-zinc-500">Next.js 16 • Fully client-side • Air-gapped demo</div>
         </div>
       </div>
     )
   }
 
-  // Main branded dashboard
+  // Branded dashboard
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100" style={{ '--accent': primaryColor } as any}>
       <div className="border-b border-zinc-800 bg-zinc-900 px-8 py-6 flex items-center justify-between">
         <div className="flex items-center gap-x-4">
-          {logoUrl && (
-            <img src={logoUrl} alt={`${domain} logo`} className="w-12 h-12 object-contain rounded-2xl shadow-md" onError={() => setLogoUrl('')} />
-          )}
+          {logoUrl && <img src={logoUrl} alt={`${domain} logo`} className="w-12 h-12 object-contain rounded-2xl shadow-md" onError={() => setLogoUrl('')} />}
           <div>
             <h1 className="text-3xl font-semibold tracking-tight" style={{ color: primaryColor }}>Sovereign AI Redaction</h1>
             <p className="text-sm text-zinc-400">for {domain}</p>
@@ -121,12 +115,9 @@ export default function SovereignRedactionDemo() {
 
       <div className="max-w-screen-2xl mx-auto p-8">
         <div className="flex gap-8 h-[calc(100vh-120px)]">
-          {/* Left: Input */}
+          {/* Left Input */}
           <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col shadow-2xl">
-            <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>
-              📋 CLIENT PII INPUT
-            </h2>
-
+            <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>📋 CLIENT PII INPUT</h2>
             <div className="space-y-8 flex-1">
               <div>
                 <label className="block text-xs font-medium text-zinc-400 mb-2">CLIENT NAME</label>
@@ -163,14 +154,13 @@ export default function SovereignRedactionDemo() {
             </button>
           </div>
 
-          {/* Middle: Loading */}
+          {/* Middle Loading */}
           <div className="w-80 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl">
             <div className="mb-8">
               <div className="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center text-4xl mb-6" style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}>🧬</div>
               <h3 className="font-medium text-xl mb-1">Air-Gapped Pipeline</h3>
               <p className="text-zinc-400 text-sm">Local Sovereign AI Redaction Engine</p>
             </div>
-
             {isProcessing ? (
               <div className="space-y-6 w-full">
                 <div className="flex justify-center"><div className="w-12 h-12 border-4 border-zinc-700 border-t-[var(--accent)] rounded-full animate-spin"></div></div>
@@ -181,10 +171,9 @@ export default function SovereignRedactionDemo() {
             )}
           </div>
 
-          {/* Right: Output */}
+          {/* Right Output */}
           <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col shadow-2xl">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>✅ REDACTED OUTPUT</h2>
-
             {sanitizedPayload ? (
               <div className="space-y-8">
                 <div className="bg-black/40 border border-zinc-700 rounded-3xl p-6 font-mono text-sm space-y-4">
@@ -204,14 +193,23 @@ export default function SovereignRedactionDemo() {
                   </div>
                 </div>
 
-                <button onClick={() => {setSanitizedPayload(null); setIsProcessing(false)}} className="text-xs text-zinc-400 hover:text-white underline">Clear output</button>
+                <button onClick={() => { setSanitizedPayload(null); setIsProcessing(false) }} className="text-xs text-zinc-400 hover:text-white underline">Clear output</button>
               </div>
             ) : (
-              <div className="flex-1 flex items-center justify-center text-zinc-500">Processed output will appear here</div>
+              <div className="flex-1 flex items-center justify-center text-zinc-500">Processed redacted output will appear here</div>
             )}
           </div>
         </div>
       </div>
     </div>
+  )
+}
+
+// Root page with Suspense boundary (this fixes the Vercel build error)
+export default function Page() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Loading Sovereign AI Redaction Demo...</div>}>
+      <RedactionApp />
+    </Suspense>
   )
 }
