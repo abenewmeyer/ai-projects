@@ -50,7 +50,7 @@ function RedactionApp() {
       `[${new Date(Date.now() + 3200).toLocaleTimeString()}] ZERO-RETENTION PAYLOAD PREPARED`,
       `[${new Date(Date.now() + 4000).toLocaleTimeString()}] SANITIZED NOTES ROUTED TO MOCK LLM`,
       `[${new Date(Date.now() + 4800).toLocaleTimeString()}] AUDIT COMPLETE — NO DATA EXFILTRATED`,
-      `[${new Date(Date.now() + 5600).toLocaleTimeString()}] SOVEREIGN AI SANDBOX SECURE ✓`,
+      `[${new Date(Date.now() + 5600).toLocaleTimeString()}] SOVEREIGN EXECUTION ENVIRONMENT SECURE ✓`,
     ]
 
     for (const log of logs) {
@@ -87,12 +87,12 @@ function RedactionApp() {
         <div className="max-w-2xl w-full text-center">
           <div className="flex items-center justify-center gap-x-3 mb-8">
             <div className="w-11 h-11 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-inner">🛡️</div>
-            <h1 className="text-5xl font-semibold tracking-tighter text-white">Sovereign AI Redaction</h1>
+            <h1 className="text-5xl font-semibold tracking-tighter text-white">Sovereign Execution Environment</h1>
           </div>
 
           <p className="text-xl text-zinc-400 mb-10 max-w-md mx-auto">
-            Enter any company domain to instantly brand this bank-grade AI redaction demo.<br />
-            Fully local. Air-gapped. Zero data leaves your browser.
+            Enter any company domain to instantly brand this bank-grade execution environment.<br />
+            Fully local. Air-gapped. Zero data leaves the browser.
           </p>
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl">
@@ -136,7 +136,7 @@ function RedactionApp() {
             <img src={logoUrl} alt={`${domain} logo`} className="w-12 h-12 object-contain rounded-2xl shadow-md" onError={() => setLogoUrl('')} />
           )}
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight" style={{ color: primaryColor }}>Sovereign AI Redaction</h1>
+            <h1 className="text-3xl font-semibold tracking-tight" style={{ color: primaryColor }}>Sovereign Execution Environment</h1>
             <p className="text-sm text-zinc-400">for {domain}</p>
           </div>
         </div>
@@ -199,7 +199,7 @@ function RedactionApp() {
             <div className="mb-8">
               <div className="w-20 h-20 mx-auto rounded-3xl flex items-center justify-center text-4xl mb-6" style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}>🧬</div>
               <h3 className="font-medium text-xl mb-1">Air-Gapped Pipeline</h3>
-              <p className="text-zinc-400 text-sm">Local Sovereign AI Redaction Engine</p>
+              <p className="text-zinc-400 text-sm">Local Sovereign Execution Environment</p>
             </div>
             {isProcessing ? (
               <div className="space-y-6 w-full">
@@ -211,7 +211,7 @@ function RedactionApp() {
             )}
           </div>
 
-          {/* RIGHT: Redacted Output - improved meeting notes display */}
+          {/* RIGHT: Output */}
           <div className="flex-1 bg-zinc-900 border border-zinc-800 rounded-3xl p-8 flex flex-col shadow-2xl">
             <h2 className="text-lg font-semibold mb-6 flex items-center gap-x-2" style={{ color: primaryColor }}>✅ REDACTED OUTPUT</h2>
             
@@ -250,7 +250,7 @@ function RedactionApp() {
             )}
           </div>
 
-          {/* AUDIT TERMINAL - now vertical panel on the right */}
+          {/* AUDIT TERMINAL */}
           <div className="w-96 bg-black border border-zinc-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col">
             <div className="bg-zinc-950 border-b border-zinc-800 px-6 py-3 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-x-3">
@@ -276,10 +276,10 @@ function RedactionApp() {
   )
 }
 
-// Required for Next.js 16 + useSearchParams
+// Required for Next.js 16
 export default function Page() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Loading Sovereign AI Redaction Demo...</div>}>
+    <Suspense fallback={<div className="min-h-screen bg-zinc-950 flex items-center justify-center text-white">Loading Sovereign Execution Environment...</div>}>
       <RedactionApp />
     </Suspense>
   )
